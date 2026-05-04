@@ -1,0 +1,22 @@
+{
+  "version": "0.1.0",
+  "description": "Secure localhost tunneling CLI",
+  "homepage": "https://devnet.sh",
+  "license": "MIT",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/enorwood22/devnet-cli/releases/download/v$version/devnet-win.exe",
+      "bin": [["devnet-win.exe", "devnet"]]
+    }
+  },
+  "checkver": {
+    "github": "https://github.com/enorwood22/devnet-cli"
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/enorwood22/devnet-cli/releases/download/v$version/devnet-win.exe"
+      }
+    }
+  }
+}

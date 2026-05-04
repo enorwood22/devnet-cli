@@ -1,0 +1,39 @@
+{
+  "name": "devnet-cli",
+  "version": "0.1.0",
+  "description": "Secure localhost tunneling CLI",
+  "type": "module",
+  "bin": {
+    "devnet": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "lint": "eslint src --ext .ts",
+    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/bundle.cjs --format=cjs --external:fsevents",
+    "package:win": "npm run bundle && pkg dist/bundle.cjs --target node18-win-x64 --output bin/devnet-win.exe"
+  },
+  "pkg": {
+    "targets": [
+      "node18-win-x64"
+    ],
+    "outputPath": "bin"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "conf": "^13.0.1",
+    "inquirer": "^10.1.0",
+    "ora": "^8.1.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.12",
+    "@yao-pkg/pkg": "^5.16.1",
+    "esbuild": "^0.24.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}
