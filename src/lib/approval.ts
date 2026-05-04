@@ -1,4 +1,4 @@
-import { select } from "@inquirer/prompts";
+import readline from "readline";
 import chalk from "chalk";
 import type { WsMessage } from "../types.js";
 
@@ -11,13 +11,11 @@ export async function promptApproval(req: ConnRequest): Promise<boolean> {
   console.log(`  Path:       ${req.path}`);
   console.log();
 
-  const answer = await select({
-    message: "Allow this connection?",
-    choices: [
-      { name: "Approve", value: "approve" },
-      { name: "Deny", value: "deny" },
-    ],
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.question("  Allow this connection? [y/N] ", (answer) => {
+      rl.close();
+      resolve(answer.trim().toLowerCase() === "y");
+    });
   });
-
-  return answer === "approve";
 }
