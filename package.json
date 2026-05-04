@@ -3,8 +3,9 @@
   "version": "0.1.8",
   "description": "Secure localhost tunneling CLI",
   "type": "module",
+  "main": "./dist/bundle.cjs",
   "bin": {
-    "devnet": "./dist/index.js"
+    "devnet": "./dist/bundle.cjs"
   },
   "scripts": {
     "build": "tsc",
@@ -14,8 +15,13 @@
     "package:win": "npm run bundle && pkg dist/bundle.cjs --target node18-win-x64 --output bin/devnet-win.exe"
   },
   "pkg": {
+    "scripts": "dist/bundle.cjs",
     "targets": [
-      "node18-win-x64"
+      "node18-win-x64",
+      "node18-macos-x64",
+      "node18-macos-arm64",
+      "node18-linux-x64",
+      "node18-linux-arm64"
     ],
     "outputPath": "bin"
   },

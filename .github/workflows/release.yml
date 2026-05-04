@@ -35,11 +35,11 @@ jobs:
       - name: Package all platforms
         run: |
           mkdir -p bin
-          npx @yao-pkg/pkg dist/bundle.cjs --target node18-win-x64     --output bin/devnet-win.exe
-          npx @yao-pkg/pkg dist/bundle.cjs --target node18-macos-x64   --output bin/devnet-macos-x64
-          npx @yao-pkg/pkg dist/bundle.cjs --target node18-macos-arm64 --output bin/devnet-macos-arm64
-          npx @yao-pkg/pkg dist/bundle.cjs --target node18-linux-x64   --output bin/devnet-linux-x64
-          npx @yao-pkg/pkg dist/bundle.cjs --target node18-linux-arm64 --output bin/devnet-linux-arm64
+          npx @yao-pkg/pkg . --target node18-win-x64     --output bin/devnet-win.exe
+          npx @yao-pkg/pkg . --target node18-macos-x64   --output bin/devnet-macos-x64
+          npx @yao-pkg/pkg . --target node18-macos-arm64 --output bin/devnet-macos-arm64
+          npx @yao-pkg/pkg . --target node18-linux-x64   --output bin/devnet-linux-x64
+          npx @yao-pkg/pkg . --target node18-linux-arm64 --output bin/devnet-linux-arm64
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
