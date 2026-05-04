@@ -2,7 +2,6 @@ import fs from "fs";
 import https from "https";
 import path from "path";
 import chalk from "chalk";
-import ora from "ora";
 import { CLI_VERSION } from "../version.js";
 
 const REPO = "enorwood22/devnet-cli";
@@ -57,7 +56,7 @@ function semverGt(a: string, b: string): boolean {
 }
 
 export async function updateCommand(): Promise<void> {
-  const spinner = ora("Checking for updates...").start();
+  process.stdout.write("  Checking for updates...");
 
   let latestTag: string;
   let downloadUrl: string;
@@ -65,45 +64,50 @@ export async function updateCommand(): Promise<void> {
   try {
     const res = await httpsGet(`https://api.github.com/repos/${REPO}/releases/latest`);
     if (res.status !== 200) {
-      spinner.fail("Could not reach GitHub releases API.");
+      process.stdout.write("\n");
+      console.error(chalk.red("  Could not reach GitHub releases API."));
       return;
     }
     const release = JSON.parse(res.body) as { tag_name: string; assets: { name: string; browser_download_url: string }[] };
     latestTag = release.tag_name;
 
     if (!semverGt(latestTag, CLI_VERSION)) {
-      spinner.succeed(`Already up to date (${CLI_VERSION}).`);
+      process.stdout.write("\n");
+      console.log(chalk.green(`  Already up to date (${CLI_VERSION}).`));
       return;
     }
 
     const assetName = getPlatformAsset();
     if (!assetName) {
-      spinner.fail(`Unsupported platform: ${process.platform}/${process.arch}`);
+      process.stdout.write("\n");
+      console.error(chalk.red(`  Unsupported platform: ${process.platform}/${process.arch}`));
       return;
     }
 
     const asset = release.assets.find((a) => a.name === assetName);
     if (!asset) {
-      spinner.fail(`No binary found for ${assetName} in release ${latestTag}.`);
+      process.stdout.write("\n");
+      console.error(chalk.red(`  No binary found for ${assetName} in release ${latestTag}.`));
       return;
     }
 
     downloadUrl = asset.browser_download_url;
   } catch (err) {
-    spinner.fail(`Failed to check for updates: ${(err as Error).message}`);
+    process.stdout.write("\n");
+    console.error(chalk.red(`  Failed to check for updates: ${(err as Error).message}`));
     return;
   }
 
-  spinner.text = `Downloading ${latestTag}...`;
+  process.stdout.write(chalk.gray(" ok\n"));
+  process.stdout.write(`  Downloading ${latestTag!}...`);
 
   const execPath = process.execPath;
   const tmpPath = execPath + ".update";
 
   try {
-    await downloadFile(downloadUrl, tmpPath);
+    await downloadFile(downloadUrl!, tmpPath);
     fs.chmodSync(tmpPath, 0o755);
 
-    // On Windows we can't replace a running exe directly — write a helper script
     if (process.platform === "win32") {
       const bat = path.join(path.dirname(execPath), "_devnet_update.bat");
       const batContent = [
@@ -113,16 +117,20 @@ export async function updateCommand(): Promise<void> {
         `del "${bat}"`,
       ].join("\r\n");
       fs.writeFileSync(bat, batContent);
-      spinner.succeed(`Update downloaded. Run the following to apply:\n  ${bat}`);
+      process.stdout.write("\n");
+      console.log(chalk.green(`  Update downloaded. Run to apply:`));
+      console.log(`  ${bat}`);
     } else {
       fs.renameSync(tmpPath, execPath);
-      spinner.succeed(`Updated to ${latestTag}. Restart devnet to use the new version.`);
+      process.stdout.write("\n");
+      console.log(chalk.green(`  Updated to ${latestTag!}. Restart devnet to use the new version.`));
     }
   } catch (err) {
     if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
-    spinner.fail(`Update failed: ${(err as Error).message}`);
+    process.stdout.write("\n");
+    console.error(chalk.red(`  Update failed: ${(err as Error).message}`));
     if ((err as NodeJS.ErrnoException).code === "EACCES") {
-      console.error(chalk.yellow("  Try running with sudo / as Administrator."));
+      console.error(chalk.yellow("  Try running as Administrator."));
     }
   }
 }

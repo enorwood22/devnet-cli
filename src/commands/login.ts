@@ -1,6 +1,5 @@
 import readline from "readline";
 import chalk from "chalk";
-import ora from "ora";
 import { login, logout, isLoggedIn, checkHealth } from "../lib/auth.js";
 import config from "../lib/config.js";
 
@@ -8,7 +7,7 @@ function prompt(rl: readline.Interface, question: string): Promise<string> {
   return new Promise((resolve) => rl.question(question, resolve));
 }
 
-function promptPassword(rl: readline.Interface, question: string): Promise<string> {
+function promptPassword(question: string): Promise<string> {
   return new Promise((resolve) => {
     const stdin = process.stdin;
     process.stdout.write(question);
@@ -24,10 +23,10 @@ function promptPassword(rl: readline.Interface, question: string): Promise<strin
         stdin.removeListener("data", onData);
         process.stdout.write("\n");
         resolve(password);
-      } else if (ch === "") {
+      } else if (ch === "\x03") {
         process.stdout.write("\n");
         process.exit(0);
-      } else if (ch === "") {
+      } else if (ch === "\x7f" || ch === "\x08") {
         password = password.slice(0, -1);
       } else {
         password += ch;
@@ -43,12 +42,13 @@ export async function loginCommand(): Promise<void> {
     return;
   }
 
-  const healthSpinner = ora("Connecting to relay server...").start();
+  process.stdout.write("  Connecting to relay server...");
   try {
     await checkHealth();
-    healthSpinner.succeed(chalk.gray("Relay server reachable"));
+    process.stdout.write(chalk.gray(" ok\n"));
   } catch (err: unknown) {
-    healthSpinner.fail(chalk.red((err as Error).message));
+    process.stdout.write("\n");
+    console.error(chalk.red(`  Error: ${(err as Error).message}`));
     process.exit(1);
   }
 
@@ -59,18 +59,20 @@ export async function loginCommand(): Promise<void> {
   try {
     email = await prompt(rl, "  Email: ");
     rl.close();
-    pass = await promptPassword(rl, "  Password: ");
+    pass = await promptPassword("  Password: ");
   } catch {
     rl.close();
     process.exit(1);
   }
 
-  const spinner = ora("Logging in...").start();
+  process.stdout.write("  Logging in...");
   try {
     await login(email!, pass!);
-    spinner.succeed(chalk.green(`Logged in as ${email}`));
+    process.stdout.write("\n");
+    console.log(chalk.green(`  Logged in as ${email}`));
   } catch (err: unknown) {
-    spinner.fail(chalk.red(`Login failed: ${(err as Error).message}`));
+    process.stdout.write("\n");
+    console.error(chalk.red(`  Login failed: ${(err as Error).message}`));
     process.exit(1);
   }
 }

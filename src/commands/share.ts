@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import ora from "ora";
 import { isLoggedIn } from "../lib/auth.js";
 import { openTunnel } from "../lib/tunnel.js";
 import type { TtlChoice, TunnelOptions } from "../types.js";
@@ -45,13 +44,9 @@ export async function shareCommand(port: string, flags: ShareFlags): Promise<voi
     open: flags.open,
   };
 
-  const spinner = ora(`Connecting to relay server...`).start();
-
   try {
-    spinner.stop();
     await openTunnel(options);
   } catch (err: unknown) {
-    spinner.stop();
     const msg = (err as Error).message ?? "Unknown error";
 
     // Session-related errors get a specific prompt
