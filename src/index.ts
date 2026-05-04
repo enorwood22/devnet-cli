@@ -4,13 +4,15 @@ import chalk from "chalk";
 import { loginCommand, logoutCommand } from "./commands/login.js";
 import { shareCommand } from "./commands/share.js";
 import { lsCommand } from "./commands/ls.js";
+import { updateCommand } from "./commands/update.js";
+import { CLI_VERSION } from "./version.js";
 
 const program = new Command();
 
 program
   .name("devnet")
   .description("Secure localhost tunneling with access control")
-  .version("0.1.0");
+  .version(CLI_VERSION);
 
 program
   .command("login")
@@ -44,6 +46,11 @@ program
   .command("ls")
   .description("List your active tunnels")
   .action(lsCommand);
+
+program
+  .command("update")
+  .description("Update devnet to the latest version")
+  .action(updateCommand);
 
 program.on("command:*", () => {
   console.error(chalk.red(`  Unknown command: ${program.args.join(" ")}\n`));
