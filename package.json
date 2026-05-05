@@ -2,20 +2,19 @@
   "name": "devnet-cli",
   "version": "0.1.9",
   "description": "Secure localhost tunneling CLI",
-  "type": "module",
-  "main": "./dist/bundle.cjs",
+  "main": "./dist/bundle.js",
   "bin": {
-    "devnet": "./dist/bundle.cjs"
+    "devnet": "./dist/bundle.js"
   },
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/index.ts",
     "lint": "eslint src --ext .ts",
-    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/bundle.cjs --format=cjs --external:fsevents",
-    "package:win": "npm run bundle && pkg dist/bundle.cjs --target node18-win-x64 --output bin/devnet-win.exe"
+    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/bundle.js --format=cjs --external:fsevents",
+    "package:win": "npm run bundle && pkg dist/bundle.js --target node18-win-x64 --output bin/devnet-win.exe"
   },
   "pkg": {
-    "scripts": "dist/bundle.cjs",
+    "scripts": "dist/bundle.js",
     "targets": [
       "node18-win-x64",
       "node18-macos-x64",
