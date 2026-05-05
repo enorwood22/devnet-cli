@@ -1,6 +1,6 @@
 {
   "name": "devnet-cli",
-  "version": "0.1.9",
+  "version": "0.1.11",
   "description": "Secure localhost tunneling CLI",
   "main": "./dist/bundle.js",
   "bin": {

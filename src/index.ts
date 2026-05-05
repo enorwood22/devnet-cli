@@ -3,7 +3,8 @@ import { Command } from "commander";
 import chalk from "chalk";
 import { loginCommand, logoutCommand } from "./commands/login.js";
 import { shareCommand } from "./commands/share.js";
-import { lsCommand } from "./commands/ls.js";
+import { activeCommand } from "./commands/active.js";
+import { usageCommand } from "./commands/usage.js";
 import { updateCommand } from "./commands/update.js";
 import { CLI_VERSION } from "./version.js";
 
@@ -43,9 +44,14 @@ Examples:
   .action(shareCommand);
 
 program
-  .command("ls")
+  .command("active")
   .description("List your active tunnels")
-  .action(lsCommand);
+  .action(activeCommand);
+
+program
+  .command("usage")
+  .description("Show your bandwidth and plan usage")
+  .action(usageCommand);
 
 program
   .command("update")

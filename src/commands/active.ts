@@ -26,7 +26,7 @@ function formatRemaining(seconds: number): string {
   return chalk.green(`${h}h ${m}m`);
 }
 
-export async function lsCommand(): Promise<void> {
+export async function activeCommand(): Promise<void> {
   if (!isLoggedIn()) {
     console.error(chalk.red("  Not logged in. Run: devnet login"));
     process.exit(1);

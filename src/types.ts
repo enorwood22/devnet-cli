@@ -33,7 +33,7 @@ export type WsMessage =
   | { type: "tunnel:open"; port: number; ttl: number; password?: string; allowIp?: string[]; invite?: string; clientPublicKey?: string }
   | { type: "tunnel:reclaim"; tunnelId: string }
   | { type: "tunnel:close" }
-  | { type: "tunnel:registered"; tunnelId: string; url: string; expiresAt: string; serverPublicKey?: string }
+  | { type: "tunnel:registered"; tunnelId: string; url: string; expiresAt: string; serverPublicKey?: string; ttlClamped?: boolean; ttlSeconds?: number }
   | { type: "tunnel:expired" }
   | { type: "conn:request"; connectionId: string; ip: string; device: string; method: string; path: string; userAgent?: string; headers: Record<string, string>; body?: string; bodyNonce?: string; autoApproved?: boolean }
   | { type: "conn:approve"; connectionId: string }

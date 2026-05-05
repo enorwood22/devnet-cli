@@ -110,7 +110,12 @@ async function connectOnce(options: TunnelOptions, reclaimId: string | null): Pr
           } else {
             console.log(chalk.green("\n  Tunnel active!"));
             console.log(chalk.bold(`  URL:     ${msg.url}`));
-            console.log(chalk.gray(`  Expires: ${new Date(msg.expiresAt).toLocaleString()}\n`));
+            console.log(chalk.gray(`  Expires: ${new Date(msg.expiresAt).toLocaleString()}`));
+            if (msg.ttlClamped) {
+              const mins = Math.round((msg.ttlSeconds ?? 900) / 60);
+              console.log(chalk.yellow(`  Note:    TTL capped to ${mins}m (free plan). Upgrade to Pro for up to 24h.`));
+            }
+            console.log();
             if (options.open) openInBrowser(msg.url);
           }
           break;
