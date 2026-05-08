@@ -1,4 +1,29 @@
-.env
+# dependencies
+node_modules/
+
+# build output
 dist/
 bin/
-node_modules/
+
+# environment / secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# release tooling (internal)
+release.sh

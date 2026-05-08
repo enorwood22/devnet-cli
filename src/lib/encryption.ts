@@ -1,4 +1,4 @@
-import { createECDH, createCipheriv, createDecipheriv, randomBytes, createHmac } from "crypto";
+import { createECDH, createCipheriv, createDecipheriv, randomBytes, hkdfSync } from "crypto";
 
 export function generateClientKeypair(): { privateKey: string; publicKey: string } {
   const ecdh = createECDH("prime256v1");
@@ -13,7 +13,8 @@ export function deriveSharedKey(ourPrivateKey: string, theirPublicKey: string): 
   const ecdh = createECDH("prime256v1");
   ecdh.setPrivateKey(Buffer.from(ourPrivateKey, "base64"));
   const sharedSecret = ecdh.computeSecret(Buffer.from(theirPublicKey, "base64"));
-  return createHmac("sha256", "devnet-e2e-v1").update(sharedSecret).digest();
+  // Derive a 32-byte AES key using HKDF (RFC 5869) — the standard KDF for ECDH
+  return Buffer.from(hkdfSync("sha256", sharedSecret, Buffer.alloc(0), "devnet-e2e-v1", 32));
 }
 
 export function encryptBody(
