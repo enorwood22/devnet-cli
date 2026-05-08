@@ -1,6 +1,7 @@
 import fs from "fs";
 import https from "https";
 import path from "path";
+import { spawn } from "child_process";
 import chalk from "chalk";
 import { CLI_VERSION } from "../version.js";
 
@@ -109,17 +110,29 @@ export async function updateCommand(): Promise<void> {
     fs.chmodSync(tmpPath, 0o755);
 
     if (process.platform === "win32") {
+      // Windows locks running executables, so we can't replace ourselves directly.
+      // Write a bat file that waits for us to exit (releasing the lock), then moves
+      // the new binary into place. We launch it detached and immediately exit so
+      // the move succeeds without any manual step from the user.
       const bat = path.join(path.dirname(execPath), "_devnet_update.bat");
       const batContent = [
         "@echo off",
-        "timeout /t 1 /nobreak >nul",
+        "timeout /t 2 /nobreak >nul",
         `move /y "${tmpPath}" "${execPath}"`,
         `del "${bat}"`,
       ].join("\r\n");
       fs.writeFileSync(bat, batContent);
+
+      const child = spawn("cmd.exe", ["/c", bat], {
+        detached: true,
+        stdio: "ignore",
+        windowsHide: true,
+      });
+      child.unref(); // don't keep our process alive waiting for cmd.exe
+
       process.stdout.write("\n");
-      console.log(chalk.green(`  Update downloaded. Run to apply:`));
-      console.log(`  ${bat}`);
+      console.log(chalk.green(`  Updated to ${latestTag!}. Run devnet again to use the new version.`));
+      process.exit(0);
     } else {
       fs.renameSync(tmpPath, execPath);
       process.stdout.write("\n");
