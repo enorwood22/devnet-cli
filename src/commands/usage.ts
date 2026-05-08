@@ -52,7 +52,11 @@ export async function usageCommand(): Promise<void> {
   }
 
   const { plan, bandwidthUsed, bandwidthLimit, bandwidthResetAt, maxTtlSeconds, tunnelLimit } = data;
-  const resetDate = new Date(bandwidthResetAt).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  // bandwidthResetAt is the start of the current billing period.
+  // Show when the NEXT reset happens: first day of the following month.
+  const periodStart = new Date(bandwidthResetAt);
+  const nextReset = new Date(periodStart.getFullYear(), periodStart.getMonth() + 1, 1);
+  const resetDate = nextReset.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   const pct = Math.min(bandwidthUsed / bandwidthLimit, 1);
 
   console.log();
