@@ -69,7 +69,7 @@ export async function usageCommand(): Promise<void> {
   console.log(`  ${" ".repeat(13)}${chalk.gray(`Resets ${resetDate}`)}`);
   if (plan === "free") {
     console.log();
-    console.log(chalk.gray("  Upgrade to Pro for 5 tunnels, 24h TTL, and 10 GB bandwidth."));
+    console.log(chalk.gray("  Upgrade to Pro for 5 tunnels, 24h TTL, and 20 GB bandwidth."));
     console.log(chalk.gray("  devnet.sh/#pricing"));
   }
   console.log();
