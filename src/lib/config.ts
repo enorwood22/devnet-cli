@@ -6,6 +6,7 @@ interface ConfigSchema {
   userId: string;
   email: string;
   serverUrl: string;
+  adminSecret: string;
 }
 
 const config = new Conf<ConfigSchema>({
@@ -16,6 +17,7 @@ const config = new Conf<ConfigSchema>({
     userId: "",
     email: "",
     serverUrl: "wss://relay.devnet.sh",
+    adminSecret: "",
   },
 });
 
