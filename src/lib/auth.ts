@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import config from "./config.js";
 
 function serverUrl(): string {
@@ -73,11 +74,18 @@ async function refreshToken(): Promise<void> {
   config.set("refreshToken", data.refreshToken!);
 }
 
-// Call this before any authenticated operation — silently refreshes if needed
+// Call this before any authenticated operation — silently refreshes if needed.
+// If the session cannot be refreshed, prints a clean message and exits so
+// callers never see a raw Node.js stack trace.
 export async function ensureValidToken(): Promise<string> {
   const token = config.get("authToken");
   if (isTokenExpired(token)) {
-    await refreshToken(); // throws with a clean message if refresh fails
+    try {
+      await refreshToken();
+    } catch (err) {
+      console.error(chalk.red(`\n  ${(err as Error).message}\n`));
+      process.exit(1);
+    }
   }
   return config.get("authToken");
 }
