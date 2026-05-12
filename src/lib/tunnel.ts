@@ -15,10 +15,26 @@ function sleep(ms: number): Promise<void> {
 }
 
 function openInBrowser(url: string): void {
+  // Validate before passing to the shell — guards against a compromised or
+  // MITM'd server response injecting shell metacharacters via the URL.
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    console.error(chalk.gray("  Could not open browser: invalid URL"));
+    return;
+  }
+  if (parsed.protocol !== "https:") {
+    console.error(chalk.gray("  Could not open browser: expected an https URL"));
+    return;
+  }
+
+  // Re-serialize from the parsed object so no raw user/server string reaches exec.
+  const safe = parsed.toString();
   const cmd =
-    process.platform === "win32" ? `cmd /c start "" "${url}"` :
-    process.platform === "darwin" ? `open "${url}"` :
-    `xdg-open "${url}"`;
+    process.platform === "win32" ? `cmd /c start "" "${safe}"` :
+    process.platform === "darwin" ? `open "${safe}"` :
+    `xdg-open "${safe}"`;
   exec(cmd, (err) => {
     if (err) console.error(chalk.gray(`  Could not open browser: ${err.message}`));
   });
