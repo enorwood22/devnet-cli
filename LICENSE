@@ -1,21 +1,23 @@
-MIT License
+Copyright (c) 2026 DevNet. All rights reserved.
 
-Copyright (c) 2026 Ethan Norwood
+This software and its source code are the exclusive property of DevNet.
+The source code is made available for review and transparency purposes only.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+You may NOT, without express written permission from DevNet:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  - Copy, reproduce, or duplicate any portion of this software
+  - Modify, adapt, translate, or create derivative works
+  - Distribute, sublicense, sell, or transfer this software or any portion of it
+  - Use this software to build a competing product or service
+  - Remove or alter any proprietary notices or labels
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You MAY:
+
+  - Download and run the official compiled binaries for personal or
+    commercial use with the DevNet service
+  - Review the source code for security research or educational purposes
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+DEVNET SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM USE OF THIS SOFTWARE.
+
+For licensing inquiries: support@devnet.sh
