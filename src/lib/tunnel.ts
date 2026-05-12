@@ -69,12 +69,22 @@ async function connectOnce(options: TunnelOptions, reclaimId: string | null): Pr
     let intentionalClose = false;
     let tunnelId: string | null = reclaimId;
     let sigintHandler: (() => void) | null = null;
+    let registrationTimer: ReturnType<typeof setTimeout> | null = null;
 
     const ws = new WebSocket(`${serverUrl}/tunnel`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    // Hard timeout: if the TCP connection itself doesn't open within 15 s, give up.
+    const connectTimer = setTimeout(() => {
+      if (ws.readyState !== ws.OPEN) {
+        console.error(chalk.red("\n  Connection timed out — server unreachable. Retrying..."));
+        ws.terminate();
+      }
+    }, 15_000);
+
     ws.on("open", () => {
+      clearTimeout(connectTimer);
       if (reclaimId) {
         ws.send(JSON.stringify({ type: "tunnel:reclaim", tunnelId: reclaimId }));
       } else {
@@ -88,6 +98,13 @@ async function connectOnce(options: TunnelOptions, reclaimId: string | null): Pr
           clientPublicKey: keypair.publicKey,
         }));
       }
+      // If server never confirms the tunnel (e.g. plan limit hit but no error msg), bail out.
+      registrationTimer = setTimeout(() => {
+        if (!tunnelId) {
+          console.error(chalk.red("\n  Server did not confirm tunnel registration. Retrying..."));
+          ws.close();
+        }
+      }, 15_000);
     });
 
     ws.on("message", async (raw) => {
@@ -95,6 +112,7 @@ async function connectOnce(options: TunnelOptions, reclaimId: string | null): Pr
 
       switch (msg.type) {
         case "tunnel:registered":
+          if (registrationTimer) { clearTimeout(registrationTimer); registrationTimer = null; }
           tunnelId = msg.tunnelId;
           // Derive shared encryption key if server responded with its public key
           if (msg.serverPublicKey) {
@@ -167,6 +185,8 @@ async function connectOnce(options: TunnelOptions, reclaimId: string | null): Pr
     });
 
     ws.on("close", (code) => {
+      clearTimeout(connectTimer);
+      if (registrationTimer) clearTimeout(registrationTimer);
       if (sigintHandler) process.removeListener("SIGINT", sigintHandler);
       resolve({ intentional: intentionalClose || code === 1000, tunnelId: tunnelId ?? undefined });
     });
