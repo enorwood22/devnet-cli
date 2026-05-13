@@ -10,17 +10,17 @@
     "build": "tsc",
     "dev": "ts-node src/index.ts",
     "lint": "eslint src --ext .ts",
-    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/bundle.js --format=cjs --external:fsevents",
-    "package:win": "npm run bundle && pkg dist/bundle.js --target node18-win-x64 --output bin/devnet-win.exe"
+    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node22 --outfile=dist/bundle.js --format=cjs --external:fsevents",
+    "package:win": "npm run bundle && pkg dist/bundle.js --target node22-win-x64 --output bin/devnet-win.exe"
   },
   "pkg": {
     "scripts": "dist/bundle.js",
     "targets": [
-      "node18-win-x64",
-      "node18-macos-x64",
-      "node18-macos-arm64",
-      "node18-linux-x64",
-      "node18-linux-arm64"
+      "node22-win-x64",
+      "node22-macos-x64",
+      "node22-macos-arm64",
+      "node22-linux-x64",
+      "node22-linux-arm64"
     ],
     "outputPath": "bin"
   },
